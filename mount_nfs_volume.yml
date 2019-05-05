@@ -1,0 +1,31 @@
+---
+- hosts: localhost
+  remote_user: root
+  sudo: yes
+
+  tasks:
+    - name: Ensure yum packages are installed
+      yum: 
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+        - nfs-utils
+
+    - name: Create mountable dir
+      file: 
+        state=directory 
+        path=/nfs 
+        mode=777 
+        owner=root group=root
+
+    - name: Mount NFS volume
+      mount: 
+        state=mounted
+        name=/nfs 
+        src={{hostvars[groups['nfs_server'][0]]['ansible_eth0']['ipv4']['address']}}:/share 
+        fstype=nfs
+        opts="vers=3,rw,bg,hard,rsize=65536,wsize=65536,proto=tcp,intr,timeo=600"
+        dump=0 
+        passno=2 
+
