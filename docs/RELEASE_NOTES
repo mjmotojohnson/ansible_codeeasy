@@ -1,0 +1,253 @@
+--------------------------------------------------------------------------------
+- CodeEasy Release Notes
+--------------------------------------------------------------------------------
+CodeEasy_2.0.0         (release date: 2017-03-20)
+----------------------------------------
+    - Updated instructions and code to user ONTAP 9.0 and later.  The CeCreateFlexClone.pl
+      script now allows the user to pass -username <user> -groupname <group> on the command
+      line.  This will then convert the user/groupnames to uid/gid and pass them to
+      the volume-create-clone command to chown the new flexclone to the new user/group ownership.
+    - Added -jp|-junction_path option to allow user to pass a junction_path on the command line.
+      This helps with initial setup.
+    - Removed -w from line 1 of all the CeCreate*.pl files. The warning option was generating 
+      useless warning messages from the NMSDK.
+    - Fixed code to avoid errors in new versions of Perl later than 5.16.x
+
+
+CodeEasy_1.1.5         (release date: 2016-07-24)
+----------------------------------------
+    - Merged in changed from Michael Arndt (michael.arndt@netapp.com.
+      This change included adding a new script called CeSnapMirror.pl for creating SnapMirror
+      copies of the volumes.  
+
+CodeEasy_1.1.4         (release date: 2016-07-18)
+----------------------------------------
+    - Updated CeInit and CeCommon functions to improve setting of ONTAP API versions.
+      In the past it seemed like magic setting the ONTAPI major/minor version numbers.  
+      Now the script takes default values defined in the CeInit.pm file just to enable 
+      the initial connection. Then the script calls system-get-ontapi-version to read the
+      major/minor values from the ONTAP filer.  The script then uses those values.
+      The script now reports both the initial values and then values read/set dynamically.
+
+    - Improved the documentation of the Vserver value setting in the CeInit.pm file.  The 
+      Vserver value is the Vserver name known by the Cluster - NOT a IP/DNS name.
+
+    - Updated QUICKSTART guide and CeCommon.pm to reference NMSDK 5.5 and later.
+
+    - Added information about the jexplore.jar utility for testing NMSDK API access 
+      independently of the CodeEasy scripts.  %> java -jar <NMSDK>/zedi/jexplore.jar 
+
+
+CodeEasy_1.1.3         (release date: 2016-03-20)
+----------------------------------------
+    - CodeEasy is now released at https://github.com/NetApp/CodeEasy/
+
+    - Changed filer login to user the Cluster interface vserver pair instead
+      of direct vserver access.  This is the prefered access model. Changes
+      were limited to CeInit.pm and CeCommon.pm files.
+
+    - Updated QUICKSTART guide to list additional Cluster configuration
+      requirements to enable NMSDK access.
+
+      # IMPORTANT: critical setup for Cluster Interface access
+      #   network interface modify -vserver <vserver> -lif <lif> -firewall-policy mgmt
+      #   vserver modify -vserver <vserver> -aggr-list <aggrname>
+
+CodeEasy_1.1.2         (release date: 2015-11-18)
+----------------------------------------
+    - Add CeSplitClone.pl script to demonstrate how to split a clone from a
+      parent volume/snapshot pair.
+
+    - Added "space-reserve",   'none',   Option to volume-clone-create option
+      to force flexclones to be thin provisioned.  By default, FlexClones will 
+      take on the thick/thin provisioning settings of parent volume.  
+
+    - Added FAQ_doc file which includes a list of Frequently Asked Question.
+
+
+
+CodeEasy_1.1.1         (release date: 2015-10-26)
+----------------------------------------
+    - Name/version change in docs from Eval kit to Toolkit in preparation
+      for release to the www.support.netapp.com -> Toolchest site.
+      No functionality changes in this release.
+
+CodeEasy_1.1.0         (release date: 2015-10-12)
+----------------------------------------
+    - Name/version change to remove Beta status for release to NetApp
+      Toolchest website.
+
+CodeEasy_1.1.0-Beta    (release date: 2015-10-06)
+----------------------------------------
+    - Fixed deleting of FlexClones when FC volume name and the junction path
+      volume names are different.  
+    - Updated README to include information about how to get support for this
+      kit.
+
+    - Moved CodeEasy to a private Git/Github 
+    - Updated release to Beta status 
+
+CodeEasy_1.0.11-Alpha  (release date: 2015-09-16)
+----------------------------------------
+    - Fixed commented sub routine to call creating the flex clone.  
+    - Added additional documentation to the QUICKSTART regarding sudo permissions and the use of 'sur'.
+
+    - Added document Continuous_Integration_with_NetApp_Technology_v2.docx.pdf 
+      This document helps explain the deeper scale out issues as well as
+      documents general maintenence tasks associated with this approach.
+
+    - General code clean-up.
+    - Partically implemented running CeChownList.pl inside of CeCreateFlexClone.pl.  
+      This has not been tested and the sub has been commended out for now.
+
+    - cleaned up volume, snapshot, and flexclone volume existence checks using SDK calls.
+
+CodeEasy_1.0.10-Alpha  (release date: 2015-09-03)
+----------------------------------------
+    - Fixed incorrect snapshot existence check in CeCreateSnapshot.pl
+
+
+CodeEasy_1.0.9-Alpha  (release date: 2015-09-02)
+----------------------------------------
+    Updated CeInit.pm
+    - Added two new variables $CE_UNIX_ROOT_VOLUME_PATH $CE_JUNCT_PATH_ROOT
+      thes variables are used by CeCreateVolume.pl to enable creating and
+      junctioning new volumes.
+
+    Updated Makefile and sur script
+    - Setup build chmod to 4755.  This sets the sticky bits which is needed to
+      allow sudo to work correctly.
+    - Cleaned up messaging in sur.c to be easier to read and debug
+
+    Corrected CeFileListGen.pl issues
+    - Correctly catalog top level files.
+    - Added warning messages if no files are found.  This might be due to
+      links. Note 'find' does not following links intentionally.
+
+    Improved error messages
+    - Added pre-checks for existing/not existing volumes, snapshots and
+      flexclones.  This ensures proper user input.
+    - Error messages are more non-storage user friendly.  Ideally input errors
+      are now caught before invoking filer API - since filer error API messages are
+      often unclear.
+
+    Updated QUICKSTART guide
+    - Added additional notes regarding filer export_policy setup.
+    - Documented limitations associated with 'find' command not following
+      links.
+
+CodeEasy_1.0.8-Alpha  (release date: 2015-08-24)
+----------------------------------------
+    Corrected Project_Example.txt example.
+
+    Added missing presentation PDF.
+
+    Updated and improved sur.c, fast_chown.c and CeChownList.pl scripts.
+
+    Significant re-write of QUICKSTART guide to clarify sudo requirements and
+    to improve organization of the described flow.
+
+
+
+CodeEasy_1.0.7-Alpha  (release date: 2015-08-18)
+----------------------------------------
+    Added CodeEasy customer presentation in pdf form.  This adds additional 
+    descriptive detail of the flow.
+
+    Added Project_Example.txt to docs which shows the UNIX project directory
+    structure along with the filer volume and junction_path examples.  This
+    should help clarify how junction paths work in the example.
+
+    Improved and update the QUICKSTART guide to clarify filer permission setup
+    and updates example setup.
+
+    Updated to use NMSDK 5.4.
+
+
+CodeEasy_1.0.6-Alpha  (release date: 2015-08-05)
+----------------------------------------
+    Removed references to CE_CLUSTER since all references should just
+    be to the VSERVER.  CE_VSERVER replaces all CE_CLUSTER values.  
+
+    Updated version information for API to use 21. This seems to work.
+    Updated test environment example to use new internal NetApp DevTest area.
+
+CodeEasy_1.0.5-Alpha  (release date: 2015-06-27)
+----------------------------------------
+- internal release only -
+
+CodeEasy_1.0.4-Alpha  (release date: 2015-05-08)
+----------------------------------------
+    Release for External Consumption
+
+    Added NetApp Copyright notice per NetApp legal policies. 
+    Minor code and documentation clean-up of CeInit.pm.
+    
+    Added -comment <text> to the FlexClone creation command. The 
+    -comment field now contains the FlexClown Owner username. This 
+    will help with tracking who owns which FlexClones.
+
+    The FlexClone report now shows the FlexClone owners.  
+
+
+
+CodeEasy_1.0.3-Alpha  (release date: 2015-04-14)
+----------------------------------------
+    Release for External Consumption
+
+    Update FlexClone report to show the following information.  The "FlexClone Act" or 
+    FlexClone Actual data usage shows the amount of storage actually consumed
+    by the FlexClone.  In one case the FlexClone is significantly different
+    than the original volume thus shows 52.57% of the original mj_vol size.  Where
+    as the other FlexClones use only 4.39% of the original volume size
+
+
+    List FlexClones
+    Parent Volume        Parent-Snapshot                FlexClone                          Parent Vol  FlexClone Vol      Split Est           FlexClone Act  Junction-path 
+    ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    mj_vol               mj_vol_snap_02                 mj_vol_snap02_clone                 445.83 MB      445.84 MB      426.32 MB       19.52 MB ( 4.38%)  /share/devops/users/ubuntu/mj_vol_snap02_clone
+    mj_vol               mj_vol_snap_02                 mj_vol_snap02_clone2                445.83 MB      891.27 MB      422.69 MB      468.58 MB (52.57%)  /share/devops/users/ubuntu/mj_vol_snap02_clone2
+    mj_vol               mj_vol_snap_03                 mj_vol_snap03_clone                 445.83 MB      445.84 MB      426.26 MB       19.58 MB ( 4.39%)  /share/devops/users/ubuntu/mj_vol_snap03_clone
+    mj_vol               mj_vol_snap_01                 mj_vol_snap_01_clone                445.83 MB      445.80 MB      426.23 MB       19.57 MB ( 4.39%)  /share/devops/users/ubuntu/mj_vol_snap_01_clone
+
+
+
+CodeEasy_1.0.2-Alpha  (release date: 2015-04-08)
+----------------------------------------
+    Release for internal NetApp use Only
+
+    Added working code to report FlexClone volumes.  The volume and junction
+    path information was reported correctly, but not the volume size info.
+
+CodeEasy_1.0.1-Alpha  (release date: 2015-04-06)
+----------------------------------------
+    Release for internal NetApp use Only
+
+    Second release after initial customer and internal testing.
+    - Added documentation associated with seting cDOT admin permissions.
+      Login username/password is associated with the vserver and requires ontapi
+      application access permissions to be set for the APIs used by the CodeEasy
+      scripts to access the filer.
+    - Cleaned up unused variables in the CEInit.pm file. Also restructured the
+      file to put the most important variables for creating the initial Snapshot
+      and FlexClone first. Setup for creating a volume is placed later with
+      additional text since most of the time the user will start with an existing
+      volume.  Some variables were renamed to improve easy of use.
+    - Add check for cDOT - if a 7-mode system is detected the script will
+      generate an ERROR and will exit.
+    - Fixed missing exit on mkdir in CeCreateFlexClone.pl.  If the junction path
+      does not have a corresponding UNIX path, then the script should FAIL with an
+      ERROR before attempting to create the FlexClone.
+    - CeFlexClone.pl changes
+	Added -ls option to show list of available snapshots.
+	Added -fc_volname option to allow flexclone volume name to be different than 
+	      the junction_path volume name seen by the user.  
+	      NOT WORKING IN THIS RELEASE
+
+
+CodeEasy_1.0.0-Alpha  (release date: 2015-03-05)
+----------------------------------------
+    This is an initial release - no customer input yet.  Created for internal
+    development purposes only.
+    This release was tested using cDOT8.2.2
+
