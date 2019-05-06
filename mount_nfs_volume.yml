@@ -2,30 +2,69 @@
 - hosts: localhost
   remote_user: root
   sudo: yes
+  vars:
+    project_root_volume: project_root
+    filer_mount: 192.168.0.101
+    aggr: aggr1
+    login: &login
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      https: true
+      validate_certs: false
 
   tasks:
-    - name: Ensure yum packages are installed
-      yum: 
-        name: "{{ packages }}"
-        state: latest
-      vars:
-        packages:
-        - nfs-utils
+    - name: Ensure packages are installed
+      action: apt pkg=nfs-common state=present
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu' 
+      tags:
+        - nfs
 
+    - name: Ensure packages are installed
+      action: yum pkg=nfs-utils state=present
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+      tags:
+        - nfs
+
+    # Mount ONTAP Root Project Volume - all volumes will be junction_path mounted
+    # under this volume - thus eliminating the need to mount all subseqent volumes
     - name: Create mountable dir
       file: 
         state=directory 
-        path=/nfs 
+        path=/{{ project_root_volume }}
         mode=777 
         owner=root group=root
 
-    - name: Mount NFS volume
+    - name: Create project_root volume for root junction_path
+      na_ontap_volume:
+        state: present
+        name: "{{ project_root_volume }}"
+        vserver: ansibleSVM
+        #vserver: "{{ vserver }}"
+        aggregate_name: "{{ aggr }}"
+        size: 40
+        size_unit: gb
+        policy: default
+        junction_path: "/{{ project_root_volume}}"
+        username: admin
+        password: Netapp1!
+        hostname: 192.168.0.101
+
+
+    - name: NFS Mount project root volume configure /etc/fstab on clients
       mount: 
         state=mounted
-        name=/nfs 
-        src={{hostvars[groups['nfs_server'][0]]['ansible_eth0']['ipv4']['address']}}:/share 
+        name={{ project_root_volume }}
+        src={{ filer_mount }}:/project_root
         fstype=nfs
         opts="vers=3,rw,bg,hard,rsize=65536,wsize=65536,proto=tcp,intr,timeo=600"
         dump=0 
         passno=2 
+      tags:
+        - nfs
 
+
+
+# to run this playbook
+# %> ansible-playbook mount_nfs_volume.yml --extra-vars “@vars.yml”
+#

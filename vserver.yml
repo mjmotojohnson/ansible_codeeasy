@@ -1,4 +1,7 @@
 ---
+# to run this playbook
+# %> ansible-playbook vserver.yml --extra-vars “@vars.yml”
+#
 - hosts: localhost
   gather_facts: false
   vars:
