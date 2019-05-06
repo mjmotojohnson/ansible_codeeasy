@@ -7,7 +7,8 @@
     password: Netapp1!
     vserver: openstack
     aggr: aggr1
-    vol_name: project_A_root_volume
+    vol_name: project_A_workspace_volume_1
+    junction_name: workspace_volume_1
     junction_root_path: project_A_root_volume
     #vol_name: ansibleVol
   tasks:
@@ -20,15 +21,19 @@
       size: 40
       size_unit: gb
       policy: default
-      junction_path: "/{{ junction_root_path }}"
+      junction_path: "/{{ junction_root_path }}/{{ junction_name }}"
       hostname: "{{ hostname }}"
       username: "{{ username }}"
       password: "{{ password }}"
       https: true
       validate_certs: false
 
-# Mount the volume manually 
-#   Note the mount host data IP (LIF) is different than the storage management IP. 
+# Mount the workspace volume 
+#   Note no need to mount the project workspace volume.  It will auto-magically
+#   get mounted via the junction_root_path.  It is assume the junction_root
+#   volume has already been mounted.
+#
+# Mount project root volume - see volume.yml  
 # %> mkdir /project_A
 # %> mount -o "vers=3,rw,bg,hard,rsize=65536,wsize=65536,proto=tcp,intr,timeo=600" 192.168.0.131:/project_A_root_volume /project_A
 #
