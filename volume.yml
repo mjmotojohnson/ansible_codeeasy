@@ -25,3 +25,9 @@
       https: true
       validate_certs: false
 
+# Mount the volume manually 
+#   Note the mount host data IP (LIF) is different than the storage management IP. 
+# %> mkdir /foo
+# %> mount -o "vers=3,rw,bg,hard,rsize=65536,wsize=65536,proto=tcp,intr,timeo=600" 192.168.0.131:/ansibleVol /foo
+#
+#
