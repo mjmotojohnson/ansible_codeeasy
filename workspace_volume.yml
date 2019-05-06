@@ -9,7 +9,7 @@
     aggr: aggr1
     vol_name: project_A_workspace_volume_1
     junction_name: workspace_volume_1
-    junction_root_path: project_A_root_volume
+    junction_root_path: project_A
     #vol_name: ansibleVol
   tasks:
   - name: Volume Create
@@ -18,8 +18,9 @@
       name: "{{ vol_name }}"
       vserver: "{{ vserver }}"
       aggregate_name: "{{ aggr }}"
-      size: 40
+      size: 1
       size_unit: gb
+      type: rw
       policy: default
       junction_path: "/{{ junction_root_path }}/{{ junction_name }}"
       hostname: "{{ hostname }}"
@@ -27,6 +28,14 @@
       password: "{{ password }}"
       https: true
       validate_certs: false
+
+  - name: Populate worksapce with files
+    git:
+      repo: http://github.com/mjmotojohnson/ansible_codeeasy.git
+      dest: /{{ junction_root_path }}/{{ junction_name }}
+      clone: yes
+      update: yes
+      force: yes
 
 # Mount the workspace volume 
 #   Note no need to mount the project workspace volume.  It will auto-magically
