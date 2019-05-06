@@ -1,0 +1,5 @@
+# commands to setup and save git creds
+git config --global user.name <username>
+git config --global user.email <email>
+git config --global credential.helper 'cache --timeout 28800'
+
