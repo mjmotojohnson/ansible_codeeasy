@@ -13,11 +13,12 @@
   tasks:
   - name: Volume Create
     na_ontap_volume:
-      state: absent
+      state: present
       name: "{{ vol_name }}"
       vserver: "{{ vserver }}"
       aggregate_name: "{{ aggr }}"
       size: 1
+      space_guarantee: none
       size_unit: gb
       policy: default
       junction_path: "/{{ junction_root_path }}"

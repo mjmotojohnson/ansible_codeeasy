@@ -7,36 +7,37 @@
     password: Netapp1!
     vserver: openstack
     aggr: aggr1
-    vol_name: project_A_workspace_volume_1
-    junction_name: workspace_volume_1
+    parent_vol_name: project_A_workspace_volume_1
+    clone_vol_name:  project_A_workspace_volume_1_clone
+    parent_snapshot: 
+    junction_name: workspace_volume_1_clone
     junction_root_path: project_A
-    #vol_name: ansibleVol
+
   tasks:
-  - name: Volume Create
-    na_ontap_volume:
+  - name: Clone Existing Workspace Volume
+    na_ontap_volume_clone:
       state: present
-      name: "{{ vol_name }}"
-      vserver: "{{ vserver }}"
-      aggregate_name: "{{ aggr }}"
-      size: 1
-      space_guarantee: none
-      size_unit: gb
-      type: rw
-      policy: default
+      parent_volume: "{{ parent_vol_name }}"
+      #parent_snapshot: "{{ parent_snapshot }}"
+      volume: "{{ clone_vol_name }}"
+      uid: "1000"
+      gid: "1000"
       junction_path: "/{{ junction_root_path }}/{{ junction_name }}"
+      space_reserve: none
+      vserver: "{{ vserver }}"
       hostname: "{{ hostname }}"
       username: "{{ username }}"
       password: "{{ password }}"
       https: true
       validate_certs: false
 
-  - name: Populate worksapce with files
-    git:
-      repo: http://github.com/mjmotojohnson/ansible_codeeasy.git
-      dest: /{{ junction_root_path }}/{{ junction_name }}
-      clone: yes
-      update: yes
-      force: yes
+#  - name: Populate worksapce with files
+#    git:
+#      repo: http://github.com/mjmotojohnson/ansible_codeeasy.git
+#      dest: /{{ junction_root_path }}/{{ junction_name }}
+#      clone: yes
+#      update: yes
+#      force: yes
 
 # Mount the workspace volume 
 #   Note no need to mount the project workspace volume.  It will auto-magically
