@@ -118,6 +118,7 @@ class NetAppOntapVolumeClone(object):
 
         self.module = AnsibleModule(
             argument_spec=self.argument_spec,
+            required_together=[ ['uid', 'gid'] ],
             supports_check_mode=True
         )
 
