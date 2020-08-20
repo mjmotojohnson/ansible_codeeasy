@@ -15,6 +15,9 @@ sudo yum install epel-release -y
 # add Python package installer (pip) 
 sudo yum install python-pip -y
 
+# For CentOS 8, pip comes with python, but it’s version 3 now.
+sudo yum install python3 -y
+
 # Install ansible
 sudo pip install ansible
 
@@ -32,9 +35,9 @@ sudo chmod +rx /usr/share/ansible/collections
 sudo yum install git -y
 
 # (Optional) Upgrade Ansible
-# sudo pip install ansible --upgrade
+sudo pip install ansible --upgrade
 
 # (Optional) Upgrade NetApp Galaxy Collections
-# sudo ansible-galaxy collection install netapp.ontap netapp.elementsw -p /usr/share/ansible/collections -f
+sudo ansible-galaxy collection install netapp.ontap netapp.elementsw -p /usr/share/ansible/collections -f
 
 
