@@ -26,22 +26,6 @@ sudo pip install netapp-lib solidfire-sdk-python
 # Install git repository package (probably already done)
 sudo yum install git -y
 
-# (Optional) Download latest versions of Ansible modules and put it in a dev folder
-# this step is optional since the latest versions of Ansible ship with 
-# the latest stable NetApp ONTAP and Element modules
-git clone https://github.com/ansible/ansible.git ~/ansible-devel
-
-# copy updated na_ontap_volume_clone module which includes uid:gid options - until merged
-cp na_ontap_volume_clone.py ~/ansible-devel/lib/ansible/modules/storage/netapp/na_ontap_volume_clone.py
-
-# (Optional) Update to the latest NetApp ONTAP and Element Ansible modules
-cd ~/ansible-devel
-git pull
-
-cd ~/ansible-devel/lib/ansible
-sudo yes|cp -aRv module_utils/netapp* /usr/lib/python2.7/site-packages/ansible/module_utils
-sudo yes|cp -aRv modules/storage/netapp/* /usr/lib/python2.7/site-packages/ansible/modules/storage/netapp/
-
 # (Optional) Upgrade Ansible
 # sudo pip install ansible --upgrade
 
