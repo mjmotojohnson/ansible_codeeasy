@@ -3,6 +3,8 @@
 # %> ansible-playbook vserver.yml --extra-vars “@vars.yml”
 #
 - hosts: localhost
+  collections:
+    - netapp.ontap
   gather_facts: false
   vars:
     login: &login
