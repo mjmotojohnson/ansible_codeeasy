@@ -1,11 +1,13 @@
 ---
 # to run this playbook
-# %> ansible-playbook vserver.yml --extra-vars “@vars.yml”
-#
+# %> ansible-playbook vserver.yml”
+# NOTE: you might need to modify the path to the vars.yml file in the vars_files section
 - hosts: localhost
   collections:
     - netapp.ontap
   gather_facts: false
+  vars_files:
+    ./vars.yml
   vars:
     login: &login
       hostname: "{{ hostname }}"
