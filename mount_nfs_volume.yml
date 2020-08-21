@@ -2,14 +2,20 @@
 - hosts: localhost
   remote_user: root
   sudo: yes
+  collections:
+    - netapp.ontap
+  gather_facts: false
+  vars_files:
+    ./vars.yml
   vars:
     project_root_volume: project_root
     filer_mount: 192.168.0.101
-    aggr: aggr1
     login: &login
       hostname: "{{ hostname }}"
       username: "{{ username }}"
       password: "{{ password }}"
+      vserver:  "{{ vserver }}"
+      aggr:     "{{ aggr }}"
       https: true
       validate_certs: false
 
@@ -39,16 +45,13 @@
       na_ontap_volume:
         state: present
         name: "{{ project_root_volume }}"
-        vserver: ansibleSVM
-        #vserver: "{{ vserver }}"
+        vserver: "{{ vserver }}"
         aggregate_name: "{{ aggr }}"
         size: 40
         size_unit: gb
         policy: default
         junction_path: "/{{ project_root_volume}}"
-        username: admin
-        password: Netapp1!
-        hostname: 192.168.0.101
+        <<: *login
 
 
     - name: NFS Mount project root volume configure /etc/fstab on clients

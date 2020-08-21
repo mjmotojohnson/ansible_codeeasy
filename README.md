@@ -15,3 +15,10 @@ https://netapp.io/2018/10/08/getting-started-with-netapp-and-ansible-install-ans
 The RedHat certified NetApp Ansible modules are include in the latest Ansible release.  A list of those modules can be found here
 https://access.redhat.com/articles/3642632?extIdCarryOver=true&sc_cid=701f2000001OH7YAAW
 
+# How to use the ansible_codeeasy code
+
+Step 1 - Install Ansible using the install_ansible.sh script
+%> ./install_ansbile.sh
+
+Step 2 - Create ONTAP vserver (virtual storage server)
+%> ansible-playbook vserver.yml --extra-vars “@vars.yml”

@@ -1,12 +1,20 @@
 ---
 - hosts: localhost
   name: Volume Action
+  collections:
+    - netapp.ontap
+  gather_facts: false
+  vars_files:
+    ./vars.yml
   vars:
-    hostname: 192.168.0.101
-    username: admin
-    password: Netapp1!
-    vserver: openstack
-    aggr: aggr1
+    login: &login
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      vserver:  "{{ vserver }}"
+      aggr:     "{{ aggr }}"
+      https: true
+      validate_certs: false
     vol_name: project_A_workspace_volume_1
     junction_name: workspace_volume_1
     junction_root_path: project_A
@@ -16,19 +24,13 @@
     na_ontap_volume:
       state: present
       name: "{{ vol_name }}"
-      vserver: "{{ vserver }}"
-      aggregate_name: "{{ aggr }}"
       size: 1
       space_guarantee: none
       size_unit: gb
       type: rw
       policy: default
       junction_path: "/{{ junction_root_path }}/{{ junction_name }}"
-      hostname: "{{ hostname }}"
-      username: "{{ username }}"
-      password: "{{ password }}"
-      https: true
-      validate_certs: false
+      <<: *login
 
   - name: Populate worksapce with files
     git:
